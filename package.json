@@ -1,0 +1,29 @@
+{
+  "name": "beitar-illit-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MenachemMartinov/beitar-illit.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MenachemMartinov/beitar-illit/issues"
+  },
+  "dependencies": {
+    "@hapi/joi": "^17.1.1",
+    "bcrypt": "^5.0.0",
+    "config": "^3.3.2",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.20",
+    "mongoose": "^5.10.12"
+  },
+  "homepage": "https://github.com/MenachemMartinov/beitar-illit#readme"
+}

@@ -1,0 +1,5 @@
+{
+  "monogolocal": "mongodb://localhost/project-karlin-2",
+  "mongoUrl": "mongodb://menachemMartinov:martinov@cluster0-shard-00-00.mxhjx.mongodb.net:27017,cluster0-shard-00-01.mxhjx.mongodb.net:27017,cluster0-shard-00-02.mxhjx.mongodb.net:27017/myKralinProject?ssl=true&replicaSet=atlas-a2jlzn-shard-0&authSource=admin&retryWrites=true&w=majority",
+  "jwtKey": "menachem martinov beitar illit business"
+}
