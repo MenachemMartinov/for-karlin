@@ -2,7 +2,7 @@ const Joi = require("@hapi/joi");
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
 const { User } = require("../models/user");
-const {IsLogged, generateBizNumber} = require("../models/allUsersLogged");
+const { IsLogged, generateBizNumber } = require("../models/allUsersLogged");
 const auth = require("../middlewares/auth");
 
 const router = require("express").Router();
@@ -12,12 +12,15 @@ router.get("/login", auth, async (req, res) => {
     // does user logged
     let isLogged = await IsLogged.findOne({ user_id: req.user._id });
     if (isLogged) {
-      return res.status(400).send("the is logged");
+      return res.status(400).send("you  is been logged");
     }
-    isLogged = new IsLogged({ user_id: req.user._id, bizNumber: await generateBizNumber() });
+    isLogged = new IsLogged({
+      user_id: req.user._id,
+      bizNumber: await generateBizNumber(),
+    });
     console.log(isLogged);
 
-    let isLoggedSave = await isLogged.save()
+    let isLoggedSave = await isLogged.save();
     console.log(isLoggedSave);
 
     // send the user a token
@@ -38,36 +41,56 @@ router.post("/loginUser", async (req, res) => {
     return res.status(400).send(error.details[0].message);
   }
 
+  try {
+    // does user exist
+    let user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      return res.status(400).send("Invalid email or password");
+    }
 
-  // does user exist
-  let user = await User.findOne({ email: req.body.email });
-  if (!user) {
-    return res.status(400).send("Invalid email or password");
+    user.generateAuth;
+    // validate password
+    const isValidPassword = await bcrypt.compare(
+      req.body.password,
+      user.password
+    );
+    if (!isValidPassword) {
+      return res.status(400).send("Invalid email or password");
+    }
+
+    // does user logged
+    let isLogged = await IsLogged.findOne({ user_id: user._id });
+    if (isLogged) {
+      return res.status(400).send("you  is been logged");
+    }
+    isLogged = new IsLogged({
+      user_id: user._id,
+      bizNumber: await generateBizNumber(),
+    });
+
+    await isLogged.save();
+
+    // send the user a token
+    res.send({
+      token: user.generateAuthToken(),
+      user: _.pick(user, ["_id", "name", "email", "biz"]),
+    });
+
+  } catch (error) {
+    console.error(error);
   }
-
-  user.generateAuth;
-  // validate password
-  const isValidPassword = await bcrypt.compare(
-    req.body.password,
-    user.password
-  );
-  if (!isValidPassword) {
-    return res.status(400).send("Invalid email or password");
-  }
-
-  // send the user a token
-  res.send({
-    token: user.generateAuthToken(),
-    user: _.pick(user, ["_id", "name", "email"]),
-  });
 });
 
 router.delete("/deleteIsLogged", auth, async (req, res) => {
-  let isLogged = await IsLogged.findOneAndRemove({ user_id: req.user._id });
-  if (isLogged) {
-    return res.status(400).send("the user is logged");
+  try {
+    let isLogged = await IsLogged.findOneAndRemove({ user_id: req.user._id });
+    if (!isLogged) {
+      return res.status(400).send({ message: "the user is logged out" });
+    }
+    res.send(isLogged);
+  } catch (error) {
+    console.error(error);
   }
-  res.send(isLogged);
 });
 
 function validate(data) {

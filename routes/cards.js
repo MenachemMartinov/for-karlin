@@ -1,5 +1,5 @@
 const auth = require("../middlewares/auth");
-const { Card } = require("../models/card");
+const { Card, generateBizNumber } = require("../models/card");
 
 const router = require("express").Router();
 
