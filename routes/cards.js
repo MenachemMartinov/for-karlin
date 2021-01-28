@@ -29,9 +29,7 @@ router.get("/allCards", auth, async (req, res) => {
 router.get("/myCards", auth, async (req, res) => {
   try {
     console.log(req.user._id, "get id");
-    const card = await Card.find({
-      user_id: req.user._id,
-    });
+    const card = await Card.find();
     if (!card) {
       return res.status(404).send("The card with the given ID was not found");
     }
